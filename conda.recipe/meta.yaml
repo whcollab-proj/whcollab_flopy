@@ -1,0 +1,52 @@
+{% set name = "flopy" %}
+{% set version = "3.9.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/flopy-{{ version }}.tar.gz
+  sha256: 78ba488012c6c4926b69883832c7c0fe51b41fe79333731f4e6e63d7f1b604cc
+
+build:
+  entry_points:
+    - get-modflow = flopy.utils.get_modflow:cli_main
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python {{ python_min }}
+    - hatchling
+    - hatch-fancy-pypi-readme
+    - pip
+  run:
+    - python >={{ python_min }}
+    - numpy >=1.20.3
+    - matplotlib-base >=1.4.0
+    - pandas >=2.0.0
+
+test:
+  imports:
+    - flopy
+  commands:
+    - pip check
+    - get-modflow --help
+  requires:
+    - pip
+    - python {{ python_min }}
+
+about:
+  home: https://github.com/modflowpy/flopy
+  summary: FloPy is a Python package to create, run, and post-process MODFLOW-based models
+  license: CC0-1.0
+  license_file: LICENSE.md
+
+extra:
+  recipe-maintainers:
+    - kwilcox
+    - ocefpaf
+    - jdhughes-dev
+    - mwtoews
